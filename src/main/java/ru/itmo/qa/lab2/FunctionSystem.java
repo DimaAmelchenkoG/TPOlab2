@@ -24,7 +24,7 @@ import static java.math.RoundingMode.HALF_EVEN;
  *            - ((log_10(x) - ln(x)) * (log_3(x) - ln(x))))
  * </pre>
  */
-public class EquationSystem extends AbstractFunction {
+public class FunctionSystem extends AbstractFunction {
 
   private final Sine sin;
   private final Cosine cos;
@@ -36,7 +36,7 @@ public class EquationSystem extends AbstractFunction {
   private final BaseNLogarithm log5;
   private final BaseNLogarithm log10;
 
-  public EquationSystem() {
+  public FunctionSystem() {
     super();
     this.sin = new Sine();
     this.cos = new Cosine();
@@ -49,7 +49,7 @@ public class EquationSystem extends AbstractFunction {
     this.log10 = new BaseNLogarithm(10);
   }
 
-  public EquationSystem(
+  public FunctionSystem(
       Sine sin,
       Cosine cos,
       Secant sec,

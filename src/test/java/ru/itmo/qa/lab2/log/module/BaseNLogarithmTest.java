@@ -28,6 +28,13 @@ class BaseNLogarithmTest {
   void shouldNotCalculateForZero() {
     assertThrows(ArithmeticException.class, () -> log5.calculate(ZERO, PRECISION));
   }
+  @Test
+  void shouldNotCalculateForNegative() {
+    assertThrows(ArithmeticException.class, () -> log5.calculate(BigDecimal.valueOf(-1), PRECISION));
+    assertThrows(ArithmeticException.class, () -> log5.calculate(BigDecimal.valueOf(-0.5), PRECISION));
+    assertThrows(ArithmeticException.class, () -> log5.calculate(BigDecimal.valueOf(-11), PRECISION));
+  }
+
 
   @Test
   void shouldCalculateForOne() {

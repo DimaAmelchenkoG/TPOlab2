@@ -1,5 +1,6 @@
 package ru.itmo.qa.lab2.trig.module;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
@@ -7,9 +8,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import ru.itmo.qa.lab2.trig.Tangent;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import static java.lang.String.format;
 import static java.math.BigDecimal.ZERO;
+import static java.math.MathContext.DECIMAL128;
 import static java.math.RoundingMode.HALF_EVEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,6 +44,12 @@ class TangentTest {
   @ParameterizedTest(name = "tan({0})")
   @CsvFileSource(resources = "/tan.csv", numLinesToSkip = 1, delimiter = ',')
   void testTan(BigDecimal x, BigDecimal y) {
-    assertEquals(y, tan.calculate(x, PRECISION));
+    MathContext mc = new MathContext(DECIMAL128.getPrecision());
+    for (int k = -5; k <= 5; ++k) {
+      BigDecimal x_p = BigDecimalMath.pi(mc)
+              .multiply(BigDecimal.valueOf(k))
+              .add(x);
+      assertEquals(y, tan.calculate(x_p, PRECISION));
+    }
   }
 }

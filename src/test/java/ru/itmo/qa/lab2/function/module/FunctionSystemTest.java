@@ -1,30 +1,33 @@
 package ru.itmo.qa.lab2.function.module;
 
+import ch.obermuhlner.math.big.BigDecimalMath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import ru.itmo.qa.lab2.EquationSystem;
+import ru.itmo.qa.lab2.FunctionSystem;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.math.MathContext.DECIMAL128;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class EquationSystemTest {
+class FunctionSystemTest {
 
   private static final BigDecimal DEFAULT_PRECISION = new BigDecimal("0.0000001");
 
-  private EquationSystem system;
+  private FunctionSystem system;
 
   @BeforeEach
   void init() {
-    system = new EquationSystem();
+    system = new FunctionSystem();
   }
 
   @Test
@@ -52,13 +55,29 @@ class EquationSystemTest {
     assertThrows(ArithmeticException.class, () -> system.calculate(arg, DEFAULT_PRECISION));
   }
 
+  void verify(double x, double expected, double actual, double tolerance) {
+    assertEquals(expected, actual, tolerance, () -> format("x=%s expected≈%s actual=%s", x, expected, actual));
+  }
   @ParameterizedTest
   @MethodSource("samplePoints")
   void shouldMatchMathOracle(double x, double tolerance) {
-    BigDecimal actual = system.calculate(BigDecimal.valueOf(x), DEFAULT_PRECISION);
     double expected = oracle(x);
-    assertTrue(Math.abs(actual.doubleValue() - expected) < tolerance,
-        () -> format("x=%s expected≈%s actual=%s", x, expected, actual));
+    MathContext mc = new MathContext(DECIMAL128.getPrecision());
+    if (x <= 0) {
+      for (int k = -5; k <= 0; k++) {
+        BigDecimal x_p = BigDecimalMath.pi(mc)
+                .multiply(BigDecimal.valueOf(2))
+                .multiply(BigDecimal.valueOf(k))
+                .add(BigDecimal.valueOf(x));
+        BigDecimal actual = system.calculate(x_p, DEFAULT_PRECISION);
+        verify(x_p.doubleValue(), expected, actual.doubleValue(), tolerance);
+      }
+
+    } else {
+      BigDecimal actual = system.calculate(BigDecimal.valueOf(x), DEFAULT_PRECISION);
+      verify(x, expected, actual.doubleValue(), tolerance);
+
+    }
   }
 
   private static double oracle(double x) {

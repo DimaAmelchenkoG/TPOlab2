@@ -19,45 +19,52 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CosineTest {
-  private static final BigDecimal PRECISION = new BigDecimal("0.0000001");
+    private static final BigDecimal PRECISION = new BigDecimal("0.0000001");
 
-  private Cosine cos;
+    private Cosine cos;
 
-  @BeforeEach
-  void init() {
-    cos = new Cosine(new Sine());
-  }
+    @BeforeEach
+    void init() {
+        cos = new Cosine(new Sine());
+    }
 
-  @Test
-  void shouldCalculateForZero() {
-    assertEquals(ONE.setScale(7, HALF_EVEN), cos.calculate(ZERO, PRECISION));
-  }
+    @Test
+    void shouldCalculateForZero() {
+        assertEquals(ONE.setScale(7, HALF_EVEN), cos.calculate(ZERO, PRECISION));
+    }
 
-  @Test
-  void shouldCalculateForPiHalf() {
-    MathContext mc = new MathContext(DECIMAL128.getPrecision());
-    BigDecimal arg = BigDecimalMath.pi(mc).divide(BigDecimal.valueOf(2), DECIMAL128.getPrecision(), HALF_EVEN);
-    BigDecimal expected = ZERO.setScale(7, HALF_EVEN);
-    assertAll(
-        () -> assertEquals(expected, cos.calculate(arg, PRECISION)),
-        () -> assertEquals(expected, cos.calculate(arg.negate(), PRECISION)),
-        () -> assertEquals(expected, cos.calculate(arg.multiply(BigDecimal.valueOf(3)), PRECISION)),
-        () -> assertEquals(expected, cos.calculate(arg.multiply(BigDecimal.valueOf(3)).negate(), PRECISION)));
-  }
+    @Test
+    void shouldCalculateForPiHalf() {
+        MathContext mc = new MathContext(DECIMAL128.getPrecision());
+        BigDecimal arg = BigDecimalMath.pi(mc).divide(BigDecimal.valueOf(2), DECIMAL128.getPrecision(), HALF_EVEN);
+        BigDecimal expected = ZERO.setScale(7, HALF_EVEN);
+        assertAll(
+                () -> assertEquals(expected, cos.calculate(arg, PRECISION)),
+                () -> assertEquals(expected, cos.calculate(arg.negate(), PRECISION)),
+                () -> assertEquals(expected, cos.calculate(arg.multiply(BigDecimal.valueOf(3)), PRECISION)),
+                () -> assertEquals(expected, cos.calculate(arg.multiply(BigDecimal.valueOf(3)).negate(), PRECISION)));
+    }
 
-  @Test
-  void shouldCalculateForPi() {
-    MathContext mc = new MathContext(DECIMAL128.getPrecision());
-    BigDecimal arg = BigDecimalMath.pi(mc);
-    BigDecimal expected = ONE.setScale(7, HALF_EVEN).negate();
-    assertAll(
-        () -> assertEquals(expected, cos.calculate(arg, PRECISION)),
-        () -> assertEquals(expected, cos.calculate(arg.negate(), PRECISION)));
-  }
+    @Test
+    void shouldCalculateForPi() {
+        MathContext mc = new MathContext(DECIMAL128.getPrecision());
+        BigDecimal arg = BigDecimalMath.pi(mc);
+        BigDecimal expected = ONE.setScale(7, HALF_EVEN).negate();
+        assertAll(
+                () -> assertEquals(expected, cos.calculate(arg, PRECISION)),
+                () -> assertEquals(expected, cos.calculate(arg.negate(), PRECISION)));
+    }
 
-  @ParameterizedTest(name = "cos({0})")
-  @CsvFileSource(resources = "/cos.csv", numLinesToSkip = 1, delimiter = ',')
-  void testCos(BigDecimal x, BigDecimal y) {
-    assertEquals(y, cos.calculate(x, PRECISION));
-  }
+    @ParameterizedTest(name = "cos({0})")
+    @CsvFileSource(resources = "/cos.csv", numLinesToSkip = 1, delimiter = ',')
+    void testCos(BigDecimal x, BigDecimal y) {
+        MathContext mc = new MathContext(DECIMAL128.getPrecision());
+        for (int k = -5; k <= 5; ++k) {
+          BigDecimal x_p = BigDecimalMath.pi(mc)
+                  .multiply(BigDecimal.valueOf(2))
+                  .multiply(BigDecimal.valueOf(k))
+                  .add(x);
+          assertEquals(y, cos.calculate(x_p, PRECISION));
+        }
+    }
 }

@@ -37,7 +37,7 @@ class MainTest {
         "Log3.csv",
         "Log5.csv",
         "Log10.csv",
-        "EquationSystem.csv"
+        "FunctionSystem.csv"
     };
 
     for (String filename : expectedFiles) {

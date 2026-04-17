@@ -54,6 +54,6 @@ public class Main {
     write(new BaseNLogarithm(3), "Log3", NEGATIVE_END, POSITIVE_END);
     write(new BaseNLogarithm(5), "Log5", NEGATIVE_END, POSITIVE_END);
     write(new BaseNLogarithm(10), "Log10", NEGATIVE_END, POSITIVE_END);
-    write(new EquationSystem(), null, NEGATIVE_END, POSITIVE_END);
+    write(new FunctionSystem(), null, NEGATIVE_END, POSITIVE_END);
   }
 }

@@ -64,6 +64,13 @@ class SecantTest {
   @ParameterizedTest(name = "sec({0})")
   @CsvFileSource(resources = "/sec.csv", numLinesToSkip = 1, delimiter = ',')
   void testSec(BigDecimal x, BigDecimal y) {
-    assertEquals(y, sec.calculate(x, PRECISION));
+    MathContext mc = new MathContext(DECIMAL128.getPrecision());
+    for (int k = -5; k <= 5; ++k) {
+      BigDecimal x_p = BigDecimalMath.pi(mc)
+              .multiply(BigDecimal.valueOf(2))
+              .multiply(BigDecimal.valueOf(k))
+              .add(x);
+      assertEquals(y, sec.calculate(x_p, PRECISION));
+    }
   }
 }

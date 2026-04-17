@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.itmo.qa.lab2.EquationSystem;
+import ru.itmo.qa.lab2.FunctionSystem;
 import ru.itmo.qa.lab2.log.BaseNLogarithm;
 import ru.itmo.qa.lab2.log.NaturalLogarithm;
 import ru.itmo.qa.lab2.trig.Cosine;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class EquationSystemIntegrationTest {
+class FunctionSystemIntegrationTest {
 
   private static final BigDecimal PRECISION = new BigDecimal("0.0000001");
 
@@ -72,7 +72,7 @@ class EquationSystemIntegrationTest {
 
   @Test
   void shouldCallTrigModulesForNonPositiveX() {
-    EquationSystem system = new EquationSystem(
+    FunctionSystem system = new FunctionSystem(
         spySin, spyCos, spySec, spyTan, spyLn, spyLog2, spyLog3, spyLog5, spyLog10);
     system.calculate(new BigDecimal("-5"), PRECISION);
     verify(spySin, atLeastOnce()).calculate(any(BigDecimal.class), any(BigDecimal.class));
@@ -88,7 +88,7 @@ class EquationSystemIntegrationTest {
 
   @Test
   void shouldCallLogModulesForPositiveX() {
-    EquationSystem system = new EquationSystem(
+    FunctionSystem system = new FunctionSystem(
         spySin, spyCos, spySec, spyTan, spyLn, spyLog2, spyLog3, spyLog5, spyLog10);
     system.calculate(new BigDecimal("5"), PRECISION);
     verify(spyLn, atLeastOnce()).calculate(any(BigDecimal.class), any(BigDecimal.class));
@@ -124,7 +124,7 @@ class EquationSystemIntegrationTest {
           .thenReturn(BigDecimal.valueOf(1 / Math.cos(xv)));
       when(mockTan.calculate(eq(x), any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(Math.tan(xv)));
     }
-    EquationSystem system = new EquationSystem(
+    FunctionSystem system = new FunctionSystem(
         mockSin, mockCos, mockSec, mockTan, mockLn, mockLog2, mockLog3, mockLog5, mockLog10);
     BigDecimal actual = system.calculate(x, PRECISION);
     assertEquals(0, y.compareTo(actual), () -> "expected " + y + " actual " + actual);

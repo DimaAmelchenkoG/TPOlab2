@@ -28,6 +28,12 @@ class NaturalLogarithmTest {
   void shouldNotCalculateForZero() {
     assertThrows(ArithmeticException.class, () -> ln.calculate(ZERO, PRECISION));
   }
+  @Test
+  void shouldNotCalculateForNegative() {
+    assertThrows(ArithmeticException.class, () -> ln.calculate(BigDecimal.valueOf(-1), PRECISION));
+    assertThrows(ArithmeticException.class, () -> ln.calculate(BigDecimal.valueOf(-0.5), PRECISION));
+    assertThrows(ArithmeticException.class, () -> ln.calculate(BigDecimal.valueOf(-11), PRECISION));
+  }
 
   @Test
   void shouldCalculateForOne() {
