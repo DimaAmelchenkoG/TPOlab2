@@ -62,6 +62,8 @@ public class CSVGraphWriter {
   }
 
   public void write(BigDecimal x1, BigDecimal x2, BigDecimal d, BigDecimal precision) throws IOException {
+
+
     try {
       writer.write("x,y");
       writer.newLine();

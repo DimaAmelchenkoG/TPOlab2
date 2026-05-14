@@ -10,17 +10,14 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.itmo.qa.lab2.trig.Cosine;
-import ru.itmo.qa.lab2.trig.Secant;
 import ru.itmo.qa.lab2.trig.Sine;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import static java.math.MathContext.DECIMAL128;
 import static java.math.RoundingMode.HALF_EVEN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,3 +61,4 @@ public class CosineIntegrationTest {
 
 
 }
+

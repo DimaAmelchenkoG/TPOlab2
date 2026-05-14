@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_EVEN;
 
 /**
@@ -25,7 +26,7 @@ public class Main {
   private static final BigDecimal PRECISION = new BigDecimal("0.0000001");
   private static final BigDecimal POSITIVE_END = new BigDecimal("10").setScale(7, HALF_EVEN);
   private static final BigDecimal NEGATIVE_END = POSITIVE_END.negate();
-  private static final BigDecimal STEP = new BigDecimal("0.05");
+  private static final BigDecimal STEP = new BigDecimal("0.001");
 
   public static void main(String[] args) {
     try {
@@ -49,11 +50,11 @@ public class Main {
     write(new Cosine(), null, NEGATIVE_END, POSITIVE_END);
     write(new Secant(), null, NEGATIVE_END, POSITIVE_END);
     write(new Tangent(), null, NEGATIVE_END, POSITIVE_END);
-    write(new NaturalLogarithm(), null, NEGATIVE_END, POSITIVE_END);
-    write(new BaseNLogarithm(2), "Log2", NEGATIVE_END, POSITIVE_END);
-    write(new BaseNLogarithm(3), "Log3", NEGATIVE_END, POSITIVE_END);
-    write(new BaseNLogarithm(5), "Log5", NEGATIVE_END, POSITIVE_END);
-    write(new BaseNLogarithm(10), "Log10", NEGATIVE_END, POSITIVE_END);
+    write(new NaturalLogarithm(), null, STEP, POSITIVE_END);
+    write(new BaseNLogarithm(2), "Log2", STEP, POSITIVE_END);
+    write(new BaseNLogarithm(3), "Log3", STEP, POSITIVE_END);
+    write(new BaseNLogarithm(5), "Log5", STEP, POSITIVE_END);
+    write(new BaseNLogarithm(10), "Log10", STEP, POSITIVE_END);
     write(new FunctionSystem(), null, NEGATIVE_END, POSITIVE_END);
   }
 }

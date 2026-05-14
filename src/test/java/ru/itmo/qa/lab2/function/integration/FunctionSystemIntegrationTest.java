@@ -106,9 +106,9 @@ class FunctionSystemIntegrationTest {
   @DisplayName("Табличные заглушки + система (эталон Math)")
   @CsvFileSource(resources = "/integration/systemIT.csv", numLinesToSkip = 1, delimiter = ',')
   void shouldCalculateWithMockFunctions(BigDecimal x, BigDecimal y) {
-    if (x.compareTo(ZERO) > 0) {
       double xv = x.doubleValue();
-      when(mockLn.calculate(eq(x), any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(Math.log(xv)));
+    if (x.compareTo(ZERO) > 0) {
+          when(mockLn.calculate(eq(x), any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(Math.log(xv)));
       when(mockLog2.calculate(eq(x), any(BigDecimal.class)))
           .thenReturn(BigDecimal.valueOf(Math.log(xv) / Math.log(2)));
       when(mockLog3.calculate(eq(x), any(BigDecimal.class)))
@@ -117,8 +117,7 @@ class FunctionSystemIntegrationTest {
           .thenReturn(BigDecimal.valueOf(Math.log(xv) / Math.log(5)));
       when(mockLog10.calculate(eq(x), any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(Math.log10(xv)));
     } else {
-      double xv = x.doubleValue();
-      when(mockSin.calculate(eq(x), any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(Math.sin(xv)));
+          when(mockSin.calculate(eq(x), any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(Math.sin(xv)));
       when(mockCos.calculate(eq(x), any(BigDecimal.class))).thenReturn(BigDecimal.valueOf(Math.cos(xv)));
       when(mockSec.calculate(eq(x), any(BigDecimal.class)))
           .thenReturn(BigDecimal.valueOf(1 / Math.cos(xv)));
