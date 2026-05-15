@@ -20,9 +20,6 @@ public class CSVGraphWriter {
     this(function, outputDir, null);
   }
 
-  /**
-   * @param fileStem если не null — имя файла без расширения (для нескольких модулей с одним классом, например log_a).
-   */
   public CSVGraphWriter(AbstractFunction function, String outputDir, String fileStem) {
     this.function = function;
     this.filePath = buildPath(outputDir, function, fileStem);

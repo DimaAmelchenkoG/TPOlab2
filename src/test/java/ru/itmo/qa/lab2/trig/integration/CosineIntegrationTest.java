@@ -17,10 +17,6 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-/**
- * Интеграция: {@link Cosine} вызывает реальный {@link Sine} (cos(x) = sin(π/2 − x)).
- * Проверяем таблично реализацию косинуса вместе с рядом для синуса, без подмены sin на Math.
- */
 @ExtendWith(MockitoExtension.class)
 public class CosineIntegrationTest {
 

@@ -19,10 +19,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-/**
- * Интеграция: в {@link Tangent} реальный {@link Sine}, {@link Cosine} — заглушка с эталонными значениями.
- * Так проверяется связка «наш sin → деление на cos», а не пересчёт всего через Math в одном моке.
- */
 @ExtendWith(MockitoExtension.class)
 class TangentIntegrationTest {
   private static final BigDecimal PRECISION = new BigDecimal("0.0000001");

@@ -29,12 +29,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-/**
- * Ветка x ≤ 0: реальный {@link Sine}, остальная тригонометрия — заглушки (эталон Math).
- * Ветка x &gt; 0: реальный {@link NaturalLogarithm}, log_2 … log_10 — заглушки.
- * Ожидаемое значение считается той же формулой, что и в {@link FunctionSystem}, с тем же разделением
- * «наш модуль / заглушка», чтобы тест проверял сборку системы, а не совпадение с полностью замоканным эталоном.
- */
 @ExtendWith(MockitoExtension.class)
 class FunctionSystemIntegrationTest {
 
@@ -163,7 +157,6 @@ class FunctionSystemIntegrationTest {
         .thenReturn(BigDecimal.valueOf(Math.log10(xv)));
   }
 
-  /** Копия ветки x ≤ 0 из {@link FunctionSystem}: sinV — то же значение, что подставит {@link FunctionSystem}. */
   private BigDecimal expectedNonPositive(BigDecimal sinV, double xv, MathContext mc) {
     BigDecimal secV = BigDecimal.valueOf(1.0 / Math.cos(xv));
     BigDecimal cosV = BigDecimal.valueOf(Math.cos(xv));
@@ -173,7 +166,6 @@ class FunctionSystemIntegrationTest {
         .setScale(PRECISION.scale(), HALF_EVEN);
   }
 
-  /** Копия ветки x &gt; 0: lnV — то же значение, что даст {@link NaturalLogarithm} в системе. */
   private BigDecimal expectedPositive(BigDecimal lnV, double xv) {
     BigDecimal l5 = BigDecimal.valueOf(Math.log(xv) / Math.log(5));
     BigDecimal l2 = BigDecimal.valueOf(Math.log(xv) / Math.log(2));

@@ -19,10 +19,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Интеграция {@link BaseNLogarithm} с реальным {@link NaturalLogarithm}: log_b(x) = ln(x) / ln(b).
- * Отдельно — заглушка ln, чтобы проверить только деление и вызовы ln в нужных точках.
- */
 @ExtendWith(MockitoExtension.class)
 class LogarithmIntegrationTest {
 

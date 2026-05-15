@@ -23,10 +23,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Два уровня: (1) {@link Secant} + реальный {@link Cosine} (внутри — реальный {@link Sine}).
- * (2) {@link Secant} + заглушка cos — проверка только формулы 1/cos и порога по точности.
- */
 @ExtendWith(MockitoExtension.class)
 class SecantIntegrationTest {
 
