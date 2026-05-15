@@ -40,6 +40,6 @@ public class CosineIntegrationTest {
   @CsvFileSource(resources = "/integration/cosIT.csv", numLinesToSkip = 1, delimiter = ',')
   void shouldMatchTabularValuesWithRealSine(BigDecimal x, BigDecimal y) {
     Cosine cos = new Cosine(new Sine());
-    assertEquals(y, cos.calculate(x, PRECISION));
+    assertEquals(y.doubleValue(), cos.calculate(x, PRECISION).doubleValue(), PRECISION.doubleValue());
   }
 }

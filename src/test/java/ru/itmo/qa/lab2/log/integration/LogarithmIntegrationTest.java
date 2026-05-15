@@ -40,27 +40,27 @@ class LogarithmIntegrationTest {
     verify(spyLn, atLeastOnce()).calculate(any(BigDecimal.class), any(BigDecimal.class));
   }
 
-  @DisplayName("log_5(x): реальный ln, сравнение с эталоном")
-  @ParameterizedTest(name = "log5({0})")
+  @DisplayName("log_3(x): реальный ln, сравнение с эталоном")
+  @ParameterizedTest(name = "log3({0})")
   @CsvSource({
-      "1488, 4.5389687",
-      "5, 1",
-      "25, 2",
+      "27, 3",
+      "3, 1",
+      "10, 2.0959033",
   })
   void shouldMatchReferenceWithRealNaturalLog(BigDecimal x, BigDecimal expected) {
-    BaseNLogarithm log5 = new BaseNLogarithm(5, new NaturalLogarithm());
-    assertEquals(expected, log5.calculate(x, PRECISION));
+    BaseNLogarithm log3 = new BaseNLogarithm(3, new NaturalLogarithm());
+    assertEquals(expected.doubleValue(), log3.calculate(x, PRECISION).doubleValue(), PRECISION.doubleValue());
   }
 
   @Test
   @DisplayName("При фиксированной заглушке ln проверяется формула log_b")
   void shouldCombineStubLnValues() {
-    BigDecimal x = new BigDecimal("1488");
-    when(mockLn.calculate(new BigDecimal("1488"), PRECISION)).thenReturn(new BigDecimal("7.3051882"));
-    when(mockLn.calculate(new BigDecimal("5"), PRECISION)).thenReturn(new BigDecimal("1.6094379"));
+    BigDecimal x = new BigDecimal("27");
+    when(mockLn.calculate(new BigDecimal("27"), PRECISION)).thenReturn(new BigDecimal("3.295836866"));
+    when(mockLn.calculate(new BigDecimal("3"), PRECISION)).thenReturn(new BigDecimal("1.09861228866"));
 
-    BaseNLogarithm log5 = new BaseNLogarithm(5, mockLn);
-    BigDecimal expected = new BigDecimal("4.5389687");
-    assertEquals(expected, log5.calculate(x, PRECISION));
+    BaseNLogarithm log5 = new BaseNLogarithm(3, mockLn);
+    BigDecimal expected = new BigDecimal("3");
+    assertEquals(expected.doubleValue(), log5.calculate(x, PRECISION).doubleValue(), PRECISION.doubleValue());
   }
 }

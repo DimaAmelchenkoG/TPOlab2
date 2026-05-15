@@ -11,23 +11,24 @@ import static java.lang.String.format;
 public class BaseNLogarithm extends AbstractFunction {
   private final NaturalLogarithm naturalLogarithm;
   private final int base;
+  private final BigDecimal baseValue;
 
   public BaseNLogarithm() {
-    super();
-    this.naturalLogarithm = new NaturalLogarithm();
-    this.base = 10;
+    this(10);
   }
 
   public BaseNLogarithm(int base) {
     super();
     this.naturalLogarithm = new NaturalLogarithm();
     this.base = base;
+    this.baseValue = BigDecimal.valueOf(base);
   }
 
   public BaseNLogarithm(int base, NaturalLogarithm naturalLogarithm) {
     super();
     this.naturalLogarithm = naturalLogarithm;
     this.base = base;
+    this.baseValue = BigDecimal.valueOf(base);
   }
 
   public int getBase() {
@@ -40,10 +41,9 @@ public class BaseNLogarithm extends AbstractFunction {
     if (x.compareTo(BigDecimal.ZERO) <= 0) {
       throw new ArithmeticException(format("Логарифм с основанием %s не имеет значения при x = %s", base, x));
     }
-    BigDecimal result = naturalLogarithm.calculate(x, precision).divide(
-        naturalLogarithm.calculate(new BigDecimal(base), precision),
-        MathContext.DECIMAL128.getPrecision(),
-        RoundingMode.HALF_EVEN);
-    return result.setScale(precision.scale(), RoundingMode.HALF_EVEN);
+    BigDecimal lnX = naturalLogarithm.calculate(x, precision);
+    BigDecimal lnBase = naturalLogarithm.calculate(baseValue, precision);
+    return lnX.divide(lnBase, MathContext.DECIMAL128)
+            .setScale(precision.scale(), RoundingMode.HALF_EVEN);
   }
 }
