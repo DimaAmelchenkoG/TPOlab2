@@ -35,6 +35,8 @@ class FunctionSystemIntegrationTest {
   private static final BigDecimal PRECISION = new BigDecimal("0.0000001");
 
   @Mock
+  private Sine mockSin;
+  @Mock
   private Cosine mockCos;
   @Mock
   private Secant mockSec;
@@ -48,6 +50,8 @@ class FunctionSystemIntegrationTest {
   private BaseNLogarithm mockLog5;
   @Mock
   private BaseNLogarithm mockLog10;
+  @Mock
+  private NaturalLogarithm mockLn;
 
   @Test
   void shouldCallTrigModulesForNonPositiveX() {
@@ -129,13 +133,129 @@ class FunctionSystemIntegrationTest {
     assertEquals(expected, system.calculate(x, PRECISION));
   }
 
+  @ParameterizedTest(name = "f({0})")
+  @DisplayName("Гибрид: только реальный sin, остальные слагаемые — заглушки")
+  @CsvFileSource(resources = "/integration/systemIT.csv", numLinesToSkip = 1, delimiter = ',')
+  void shouldMatchOnlyRealSin(BigDecimal x, @SuppressWarnings("unused") BigDecimal csvLegacyY) {
+    BigDecimal innerPrecision = PRECISION.setScale(PRECISION.scale() + 10, HALF_EVEN);
+    MathContext mc = new MathContext(DECIMAL128.getPrecision(), HALF_EVEN);
+
+    Sine realSin = new Sine();
+
+    stubTrigFromMath(x);
+    stubLnFromMath(x);
+    stubLogsFromMath(x);
+
+    FunctionSystem system = new FunctionSystem(
+        realSin, mockCos, mockSec, mockTan, mockLn, mockLog2, mockLog3, mockLog5, mockLog10);
+
+    BigDecimal expected;
+    if (x.compareTo(ZERO) <= 0) {
+      BigDecimal sinV = realSin.calculate(x, innerPrecision);
+      expected = expectedNonPositive(sinV, x.doubleValue(), mc);
+    } else {
+      BigDecimal lnV = mockLn.calculate(x, innerPrecision);
+      expected = expectedPositive(lnV, x.doubleValue());
+    }
+
+    assertEquals(expected, system.calculate(x, PRECISION));
+  }
+
+  @ParameterizedTest(name = "f({0})")
+  @DisplayName("Гибрид: только реальный ln, остальные слагаемые — заглушки")
+  @CsvFileSource(resources = "/integration/systemIT.csv", numLinesToSkip = 1, delimiter = ',')
+  void shouldMatchOnlyRealLn(BigDecimal x, @SuppressWarnings("unused") BigDecimal csvLegacyY) {
+    BigDecimal innerPrecision = PRECISION.setScale(PRECISION.scale() + 10, HALF_EVEN);
+    MathContext mc = new MathContext(DECIMAL128.getPrecision(), HALF_EVEN);
+
+    NaturalLogarithm realLn = new NaturalLogarithm();
+
+    stubSinFromMath(x);
+    stubTrigFromMath(x);
+    stubLogsFromMath(x);
+
+    FunctionSystem system = new FunctionSystem(
+        mockSin, mockCos, mockSec, mockTan, realLn, mockLog2, mockLog3, mockLog5, mockLog10);
+
+    BigDecimal expected;
+    if (x.compareTo(ZERO) <= 0) {
+      BigDecimal sinV = mockSin.calculate(x, innerPrecision);
+      expected = expectedNonPositive(sinV, x.doubleValue(), mc);
+    } else {
+      BigDecimal lnV = realLn.calculate(x, innerPrecision);
+      expected = expectedPositive(lnV, x.doubleValue());
+    }
+
+    assertEquals(expected, system.calculate(x, PRECISION));
+  }
+
+  @ParameterizedTest(name = "f({0})")
+  @DisplayName("Гибрид: только реальный cos, остальные слагаемые — заглушки")
+  @CsvFileSource(resources = "/integration/systemIT.csv", numLinesToSkip = 1, delimiter = ',')
+  void shouldMatchOnlyRealCos(BigDecimal x, @SuppressWarnings("unused") BigDecimal csvLegacyY) {
+    BigDecimal innerPrecision = PRECISION.setScale(PRECISION.scale() + 10, HALF_EVEN);
+    MathContext mc = new MathContext(DECIMAL128.getPrecision(), HALF_EVEN);
+
+    Cosine realCos = new Cosine(mockSin);
+
+    stubSinFromMath(x);
+    stubSecAndTanFromMath(x);
+    stubLnFromMath(x);
+    stubLogsFromMath(x);
+
+    FunctionSystem system = new FunctionSystem(
+        mockSin, realCos, mockSec, mockTan, mockLn, mockLog2, mockLog3, mockLog5, mockLog10);
+
+    BigDecimal expected;
+    if (x.compareTo(ZERO) <= 0) {
+      BigDecimal sinV = mockSin.calculate(x, innerPrecision);
+      BigDecimal cosV = realCos.calculate(x, innerPrecision);
+      expected = expectedNonPositiveWithCos(sinV, cosV, x.doubleValue(), mc);
+    } else {
+      BigDecimal lnV = mockLn.calculate(x, innerPrecision);
+      expected = expectedPositive(lnV, x.doubleValue());
+    }
+
+    assertEquals(expected, system.calculate(x, PRECISION));
+  }
+
+  private void stubSinFromMath(BigDecimal x) {
+    if (x.compareTo(ZERO) > 0) {
+      return;
+    }
+    double xv = x.doubleValue();
+    when(mockSin.calculate(any(BigDecimal.class), any(BigDecimal.class)))
+        .thenReturn(BigDecimal.valueOf(Math.sin(xv)));
+  }
+
+  private void stubLnFromMath(BigDecimal x) {
+    if (x.compareTo(ZERO) <= 0) {
+      return;
+    }
+    double xv = x.doubleValue();
+    when(mockLn.calculate(any(BigDecimal.class), any(BigDecimal.class)))
+        .thenReturn(BigDecimal.valueOf(Math.log(xv)));
+  }
+
   private void stubTrigFromMath(BigDecimal x) {
+    stubCosFromMath(x);
+    stubSecAndTanFromMath(x);
+  }
+
+  private void stubCosFromMath(BigDecimal x) {
     if (x.compareTo(ZERO) > 0) {
       return;
     }
     double xv = x.doubleValue();
     when(mockCos.calculate(any(BigDecimal.class), any(BigDecimal.class)))
         .thenReturn(BigDecimal.valueOf(Math.cos(xv)));
+  }
+
+  private void stubSecAndTanFromMath(BigDecimal x) {
+    if (x.compareTo(ZERO) > 0) {
+      return;
+    }
+    double xv = x.doubleValue();
     when(mockSec.calculate(any(BigDecimal.class), any(BigDecimal.class)))
         .thenReturn(BigDecimal.valueOf(1.0 / Math.cos(xv)));
     when(mockTan.calculate(any(BigDecimal.class), any(BigDecimal.class)))
@@ -158,8 +278,12 @@ class FunctionSystemIntegrationTest {
   }
 
   private BigDecimal expectedNonPositive(BigDecimal sinV, double xv, MathContext mc) {
+    return expectedNonPositiveWithCos(sinV, BigDecimal.valueOf(Math.cos(xv)), xv, mc);
+  }
+
+  private BigDecimal expectedNonPositiveWithCos(
+      BigDecimal sinV, BigDecimal cosV, double xv, MathContext mc) {
     BigDecimal secV = BigDecimal.valueOf(1.0 / Math.cos(xv));
-    BigDecimal cosV = BigDecimal.valueOf(Math.cos(xv));
     BigDecimal tanV = BigDecimal.valueOf(Math.tan(xv));
     return (((((secV.subtract(cosV)).multiply(sinV)).multiply(cosV)).subtract(secV.pow(2, mc)))
             .add(tanV))
